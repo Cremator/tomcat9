@@ -1,0 +1,48 @@
+name: tomcat9
+
+x-logging:
+  &default-logging
+  options:
+    max-size: 1m
+    max-file: 50
+  driver: json-file
+
+x-environment:
+  &default-env
+  TZ: Europe/Sofia
+  PUID: 1000
+  PGID: 1000
+volumes:
+  tomcat9:
+
+networks:
+  tomcat9:
+    name: tomcat9
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.9.0/24
+
+services:
+  tomcat9:
+    container_name: tomcat9
+    build:
+      context: ./docker
+      args:
+        TOMCAT_VERSION: 9.0.82-jre8
+    image: tomcat-custom:9.0.82-jre8
+    restart: always
+    logging: *default-logging
+    environment:
+      <<: *default-env
+      JAVA_OPTS: -Duser.language=bg -Duser.country=BG -Doracle.jdbc.autoCommitSpecCompliant=false
+      TOMCAT_USERS: admin1&password1&role1 user2&password2&role2,role3
+      TOMCAT_ALLOW: manager&.* host-manager&.* examples&.* docs&.*
+      TOMCAT_APP: name&jdbc/ApplicationDS auth&Container type&javax.sql.DataSource driverClassName&oracle.jdbc.driver.OracleDriver maxTotal&200 maxIdle&10
+    networks:
+      tomcat9:
+    ports:
+      - 8080:8080/tcp
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - tomcat9:/usr/local/tomcat/webapps
