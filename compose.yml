@@ -46,3 +46,4 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - tomcat9:/usr/local/tomcat/webapps
+      - tomcat9_logs:/usr/local/tomcat/logs
