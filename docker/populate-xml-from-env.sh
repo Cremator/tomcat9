@@ -45,3 +45,15 @@ if [[ -n "$TOMCAT_APP" ]]
 else 
     echo "TOMCAT_APP environment variable is not set."
 fi
+#TOMCAT_CONN='maxParameterCount&50000'
+if [[ -n "$TOMCAT_CONN" ]]
+    then
+    connarr=( $TOMCAT_CONN )
+    for conn in ${connarr[@]}
+        do
+            connspec=( ${conn//&/ } )
+            xmlstarlet ed -u "/Server/Service/Connector[@${connspec[0]}]/@${connspec[0]}" -v "${connspec[1]}" /usr/local/tomcat/conf/server.xml.dist > /usr/local/tomcat/conf/server.xml
+        done
+else 
+    echo "TOMCAT_ALLOW environment variable is not set."
+fi

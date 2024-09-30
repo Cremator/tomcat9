@@ -12,8 +12,12 @@ x-environment:
   TZ: Europe/Sofia
   PUID: 1000
   PGID: 1000
+
+x-tomcat-version: &TOMCAT_VERSION '9.0.82-jre8'
+
 volumes:
   tomcat9:
+  tomcat9_logs:
 
 networks:
   tomcat9:
@@ -29,8 +33,8 @@ services:
     build:
       context: ./docker
       args:
-        TOMCAT_VERSION: 9.0.82-jre8
-    image: tomcat-custom:9.0.82-jre8
+        TOMCAT_VERSION: *TOMCAT_VERSION
+    image: tomcat-custom:v1
     restart: always
     logging: *default-logging
     environment:
@@ -39,6 +43,7 @@ services:
       TOMCAT_USERS: admin1&password1&role1 user2&password2&role2,role3
       TOMCAT_ALLOW: manager&.* host-manager&.* examples&.* docs&.*
       TOMCAT_APP: name&jdbc/ApplicationDS auth&Container type&javax.sql.DataSource driverClassName&oracle.jdbc.driver.OracleDriver maxTotal&200 maxIdle&10
+      TOMCAT_CONN: maxParameterCount&50000
     networks:
       tomcat9:
     ports:
