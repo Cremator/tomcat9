@@ -35,7 +35,7 @@ jobs:
       - name: Read TOMCAT_VERSION from Dockerfile
         run: |
           TOMCAT_VERSION=$(
-            sed -n 's/^ARG TOMCAT_VERSION="\([^"]*\)".*/\1/p' Dockerfile
+            sed -n 's/^ARG TOMCAT_VERSION="\([^"]*\)".*/\1/p' docker/Dockerfile
           )
 
           echo "TOMCAT_VERSION=$TOMCAT_VERSION" >> "$GITHUB_ENV"
