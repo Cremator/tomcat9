@@ -34,16 +34,27 @@ services:
       context: ./docker
       args:
         TOMCAT_VERSION: *TOMCAT_VERSION
-    image: tomcat-custom:v1
     restart: always
     logging: *default-logging
     environment:
       <<: *default-env
       JAVA_OPTS: -Duser.language=bg -Duser.country=BG -Doracle.jdbc.autoCommitSpecCompliant=false
-      TOMCAT_USERS: admin1&password1&role1 user2&password2&role2,role3
-      TOMCAT_ALLOW: manager&.* host-manager&.* examples&.* docs&.*
-      TOMCAT_APP: name&jdbc/ApplicationDS auth&Container type&javax.sql.DataSource driverClassName&oracle.jdbc.driver.OracleDriver maxTotal&200 maxIdle&10
-      TOMCAT_CONN: maxParameterCount&50000
+      TOMCATXML__conf:tomcat-users.xml__tomcat-users__user[username:admin]__password: passw0rd
+      TOMCATXML__conf:tomcat-users.xml__tomcat-users__user[username:admin]__roles: manager-gui
+      TOMCATXML__webapps:manager:META-INF:context.xml__Context__Valve[className:org.apache.catalina.valves.RemoteAddrValve]__allow: 10\.\d+\.\d+\.\d+|127\.0\.0\.1
+      TOMCATXML__conf:context.xml__Context__JarScanner__scanManifest: false
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__url: jdbc:oracle:thin:@10.0.1.1:1521:DB
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__username: dbUser
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__password: DBpassw0rd
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__auth: Container
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__type: javax.sql.DataSource
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__factory: org.apache.tomcat.jdbc.pool.DataSourceFactory
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__driverClassName: oracle.jdbc.driver.OracleDriver
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__maxTotal: 200
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__maxIdle: 10
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__maxWait: -1
+      TOMCATXML__conf:context.xml__Context__Resource[name:ApplicationDS]__jdbcInterceptors: nl.nlighten.prometheus.tomcat.TomcatJdbcInterceptor(logFailed=true,logSlow=true,threshold=1000,buckets=.01|.05|.1|1|10,slowQueryBuckets=1|10|30)
+      TOMCATXML__conf:server.xml__Server__Service__Connector[port:8080]__maxParameterCount: 50000
     networks:
       tomcat9:
     ports:
