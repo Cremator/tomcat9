@@ -13,7 +13,7 @@ x-environment:
   PUID: 1000
   PGID: 1000
 
-x-tomcat-version: &TOMCAT_VERSION '9.0.82-jre8'
+x-tomcat-version: &TOMCAT_VERSION '9.0.121-jre8'
 
 volumes:
   tomcat9:

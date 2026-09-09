@@ -1,4 +1,4 @@
-ARG TOMCAT_VERSION="9.0.82-jre8"
+ARG TOMCAT_VERSION="9.0.121-jre8"
 ARG TOMCAT_FROM_IMAGE="tomcat:${TOMCAT_VERSION}"
 FROM ${TOMCAT_FROM_IMAGE}
 LABEL org.opencontainers.image.authors="gchompalov@bulmag.bg,snikolov@telehouse.bg"
